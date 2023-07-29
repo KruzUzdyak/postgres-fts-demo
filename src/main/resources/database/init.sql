@@ -70,7 +70,7 @@ CREATE OR REPLACE FUNCTION update_books_text_search_func()
         GROUP BY 2;
 
         SELECT (''title '' || NEW.title || '' publisher '' || NEW.publisher ||
-                '' publishing year '' || NEW.publishing_year || coalesce(NEW.review, ''''))
+                '' publishing year '' || NEW.publishing_year || '' '' || coalesce(NEW.review, ''''))
         INTO book_description;
 
         SELECT to_tsvector(coalesce(author_description, '''') || '' '' || book_description)
@@ -92,9 +92,9 @@ CREATE OR REPLACE FUNCTION authors_update_books_func()
 '
     DECLARE
         book_ids_text text;
-        book_ids         bigint[];
+        book_ids      bigint[];
     BEGIN
-        SELECT string_agg(ab.book_id, '' ''),
+        SELECT string_agg(ab.book_id::text, '' ''),
                2
         INTO book_ids_text
         FROM authors_books ab
@@ -125,6 +125,7 @@ CREATE OR REPLACE FUNCTION authors_books_update_books_func()
         UPDATE books
         SET text_search_version = CURRENT_TIMESTAMP
         WHERE id = NEW.book_id;
+        RETURN NEW;
     END;
 ' LANGUAGE plpgsql;
 
