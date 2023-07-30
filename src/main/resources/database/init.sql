@@ -44,7 +44,7 @@ CREATE OR REPLACE FUNCTION websearch_to_wildcard_tsquery(text_query text)
         FOREACH split IN ARRAY query_splits
             LOOP
                 CASE
-                    WHEN split = ''|'' OR split = ''&'' OR split = ''!'' OR split = ''!(''
+                    WHEN split = ''|'' OR split = ''&'' OR split = ''!'' OR split = ''!('' OR split = ''<->''
                         THEN new_text_query := new_text_query || split || '' '';
                     ELSE new_text_query := new_text_query || split || '':* '';
                     END CASE;
@@ -73,7 +73,7 @@ CREATE OR REPLACE FUNCTION update_books_text_search_func()
                 '' publishing year '' || NEW.publishing_year || '' '' || coalesce(NEW.review, ''''))
         INTO book_description;
 
-        SELECT to_tsvector(coalesce(author_description, '''') || '' '' || book_description)
+        SELECT to_tsvector(''simple'', coalesce(author_description, '''') || '' '' || book_description)
         INTO text_search_description;
 
         NEW.text_search := text_search_description;
