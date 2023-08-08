@@ -12,6 +12,8 @@ spring:
       hibernate:
         dialect: com.github.kruzuzdyak.repository.hqlextension.PostgresSearchHibernateDialect
         format_sql: true
+  liquibase:
+    change-log: classpath:/database/changelog-master.yaml
 
 server:
   port: 8080

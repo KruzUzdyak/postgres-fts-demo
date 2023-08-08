@@ -44,7 +44,7 @@ CREATE OR REPLACE FUNCTION websearch_to_wildcard_tsquery(text_query text)
         FOREACH split IN ARRAY query_splits
             LOOP
                 CASE
-                    WHEN split = ''|'' OR split = ''&'' OR split = ''!'' OR split = ''!('' OR split = ''<->''
+                    WHEN split = ''|'' OR split = ''&'' OR split = ''!'' OR split = ''!('' OR split = ''<->'' OR split = '')''
                         THEN new_text_query := new_text_query || split || '' '';
                     ELSE new_text_query := new_text_query || split || '':* '';
                     END CASE;
